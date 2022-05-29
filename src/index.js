@@ -1,24 +1,37 @@
 import "./style";
 import { render } from "preact";
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { Restaurant } from "./restaurant";
+import { ConfirmDialog } from "./confirmdialog";
 import Container from "@mui/material/Container";
-import ConfirmModal from "./confirmmodal";
 
 const city = "tampere";
 const SEARCH =
   "//lauri.space/solidabiskoodihaaste22/api/v1/restaurants/" + city;
 
-const voteRestaurant = (id, name) => {
-  alert(id, name);
-};
-
 const App = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [activeVote, setActiveVote] = useState("");
-  fetch(`${SEARCH}`)
-    .then((r) => r.json())
-    .then((json) => setRestaurants((json && json.restaurants) || []));
+  const [proposedVote, setProposedVote] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    fetch(`${SEARCH}`)
+      .then((r) => r.json())
+      .then((json) => setRestaurants((json && json.restaurants) || []));
+  }, [city]);
+
+  const voteRestaurant = (name) => {
+    // console.log(name);
+    setProposedVote(name);
+    setOpenDialog(true);
+  };
+  const handleDialogClose = (value) => {
+    setOpenDialog(false);
+  };
+
+  console.log("active:", activeVote);
 
   return (
     <Container maxWidth="sm">
@@ -27,11 +40,18 @@ const App = () => {
         {restaurants.map((restaurant) => (
           <Restaurant
             restaurant={restaurant}
-            clickVote={voteRestaurant.bind(restaurant.id).bind(restaurant.name)}
+            selected={restaurant.name === activeVote}
+            clickVote={voteRestaurant.bind(null, restaurant.name)}
           />
         ))}
       </div>
-      <ConfirmModal open={false} restaurantName={"derp"} />
+      <ConfirmDialog
+        handleClose={handleDialogClose}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+        restaurantName={proposedVote}
+        setActiveVote={setActiveVote}
+      />
     </Container>
   );
 };
