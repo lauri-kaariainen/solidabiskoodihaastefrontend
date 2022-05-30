@@ -3,6 +3,7 @@ import { Fragment, render } from "preact";
 import { useState, useEffect } from "preact/hooks";
 import { Restaurant } from "./restaurant";
 import { ConfirmDialog } from "./confirmdialog";
+import { ResultsCard } from "./resultscard";
 import Autocomplete from "@mui/material/Autocomplete";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -50,6 +51,7 @@ const App = () => {
   const handleVoteSuccess = (restaurant) => {
     fetch("//lauri.space/solidabiskoodihaaste22/api/v1/vote/" + restaurant.id, {
       method: "POST"
+      // credentials: "include"
       // mode: "cors"
     }).then((res) => console.log("POST Status", res.status));
   };
@@ -57,7 +59,7 @@ const App = () => {
   return (
     <Container maxWidth="sm">
       <h1>Lounaspaikkaäänestys</h1>
-      <Stack direction="row" spacing={2}>
+      <Stack direction="column" spacing={2}>
         <Autocomplete
           disablePortal
           blurOnSelect
@@ -67,17 +69,7 @@ const App = () => {
           onChange={(_, newVal) => setSelectedCity(newVal)}
           renderInput={(params) => <TextField {...params} label="Kaupunki" />}
         />
-        {voteResults.length ? (
-          <Stack spacing={1}>
-            {voteResults.slice(0, 2).map((res) => (
-              <div>
-                {res.name}, {res.votes} ään{res.votes > 1 ? "tä" : "i"}
-              </div>
-            ))}
-          </Stack>
-        ) : (
-          ""
-        )}
+        {voteResults.length ? <ResultsCard results={voteResults} /> : ""}
       </Stack>
       {activeRestaurant ? (
         <Stack direction="row" spacing={2}>
