@@ -14,9 +14,22 @@ export const ConfirmDialog = ({
   };
 
   return (
-    <Dialog onClose={handleClose} open={openDialog}>
+    <Dialog
+      sx={{ textAlign: "center" }}
+      onClose={handleClose}
+      open={openDialog}
+    >
       <DialogTitle>Äänestä ravintolaa?</DialogTitle>
-      <p style={{ textAlign: "center", fontSize: "85%" }}>{restaurantName}</p>
+      <p
+        style={{
+          fontSize: "85%",
+          width: "80%",
+          wrap: "ellipsis",
+          margin: "auto"
+        }}
+      >
+        {restaurantName}
+      </p>
       <Button color="success" onclick={handleSuccess}>
         Kyllä
       </Button>
