@@ -5,11 +5,13 @@ import Dialog from "@mui/material/Dialog";
 export const ConfirmDialog = ({
   handleClose,
   openDialog,
-  restaurantName = "tuntematon",
-  setActiveVote
+  restaurant = { name: "Virhe" },
+  setActiveRestaurant,
+  handleVoteSuccess
 }) => {
   const handleSuccess = () => {
-    setActiveVote(restaurantName);
+    setActiveRestaurant(restaurant);
+    handleVoteSuccess(restaurant);
     handleClose();
   };
 
@@ -28,7 +30,7 @@ export const ConfirmDialog = ({
           margin: "auto"
         }}
       >
-        {restaurantName}
+        {restaurant ? restaurant.name : ""}
       </p>
       <Button color="success" onclick={handleSuccess}>
         Kyllä

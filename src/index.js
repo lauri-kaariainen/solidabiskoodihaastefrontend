@@ -20,8 +20,10 @@ const voteResultsUrl = "//lauri.space/solidabiskoodihaaste22/api/v1/results/";
 
 const App = () => {
   const [restaurants, setRestaurants] = useState([]);
-  const [activeVote, setActiveVote] = useState("");
-  const [proposedVote, setProposedVote] = useState("");
+  const [activeRestaurant, setActiveRestaurant] = useState(null);
+  // const [activeVoteId, setActiveVoteId] = useState("");
+
+  const [proposedRestaurant, setProposedRestaurant] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCity, setSelectedCity] = useState("");
   const [voteResults, setVoteResults] = useState([]);
@@ -38,12 +40,18 @@ const App = () => {
       .then((json) => setVoteResults((json && json.results) || []));
   }, [selectedCity]);
 
-  const voteRestaurant = (name) => {
-    setProposedVote(name);
+  const voteRestaurant = (restaurant) => {
+    setProposedRestaurant(restaurant);
     setOpenDialog(true);
   };
   const handleDialogClose = () => {
     setOpenDialog(false);
+  };
+  const handleVoteSuccess = (restaurant) => {
+    fetch("//lauri.space/solidabiskoodihaaste22/api/v1/vote/" + restaurant.id, {
+      method: "POST"
+      // mode: "cors"
+    }).then((res) => console.log("POST Status", res.status));
   };
 
   return (
@@ -71,15 +79,15 @@ const App = () => {
           ""
         )}
       </Stack>
-      {activeVote ? (
+      {activeRestaurant ? (
         <Stack direction="row" spacing={2}>
           <div>
-            Olet äänestänyt tänään: <Button>{activeVote}</Button>
+            Olet äänestänyt tänään: <Button>{activeRestaurant.name}</Button>
           </div>
           <IconButton
             aria-label="delete"
             color="primary"
-            onclick={setActiveVote.bind(null, "")}
+            onclick={setActiveRestaurant.bind(null, null)}
           >
             <DeleteIcon />
           </IconButton>
@@ -94,8 +102,12 @@ const App = () => {
             {restaurants.map((restaurant) => (
               <Restaurant
                 restaurant={restaurant}
-                selected={restaurant.name === activeVote}
-                clickVote={voteRestaurant.bind(null, restaurant.name)}
+                selected={
+                  activeRestaurant
+                    ? activeRestaurant.name === restaurant.name
+                    : false
+                }
+                clickVote={voteRestaurant.bind(null, restaurant)}
               />
             ))}
           </div>
@@ -107,8 +119,10 @@ const App = () => {
         handleClose={handleDialogClose}
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
-        restaurantName={proposedVote}
-        setActiveVote={setActiveVote}
+        restaurant={proposedRestaurant}
+        // restaurantId={}
+        setActiveRestaurant={setActiveRestaurant}
+        handleVoteSuccess={handleVoteSuccess}
       />
     </Container>
   );

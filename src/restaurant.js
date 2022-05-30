@@ -27,10 +27,8 @@ export const Restaurant = ({
         <div style={{ marginTop: 15 }}>
           {restaurant.dishes.map((dish) => (
             <div>
-              {dish.name}
-              <Typography color="text.secondary">
-                <p>{dish.price}</p>
-              </Typography>
+              {dish.name} {dish.price}
+              {/* <Typography color="text.secondary"></Typography> */}
             </div>
           ))}
         </div>
