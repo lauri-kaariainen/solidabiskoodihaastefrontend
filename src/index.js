@@ -1,5 +1,5 @@
 import "./style";
-import { Fragment, render } from "preact";
+import { render } from "preact";
 import { useState, useEffect } from "preact/hooks";
 import { Restaurant } from "./restaurant";
 import { ConfirmDialog } from "./confirmdialog";
@@ -88,7 +88,7 @@ const App = () => {
         ""
       )}
       {selectedCity ? (
-        <Fragment>
+        <div>
           <h1>{selectedCity.toUpperCase()}</h1>
           <div class="list">
             {restaurants.map((restaurant) => (
@@ -103,7 +103,7 @@ const App = () => {
               />
             ))}
           </div>
-        </Fragment>
+        </div>
       ) : (
         ""
       )}
